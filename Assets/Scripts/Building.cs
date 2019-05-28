@@ -9,6 +9,9 @@ public class Building : MonoBehaviour {
     private static readonly int PlaceHere = Animator.StringToHash("CanPlaceHere");
 
     public LayerMask disallowedLayers;
+    public LayerMask requiredBuildings;
+    public int requiredBuildingAmount;
+    public Collider2D requiredBuildingRange;
 
     private Animator anim;
     private Rigidbody2D body;
@@ -31,7 +34,18 @@ public class Building : MonoBehaviour {
     }
 
     public bool CanPlaceHere() {
-        return !this.collider.IsTouchingLayers(this.disallowedLayers);
+        if (this.collider.IsTouchingLayers(this.disallowedLayers))
+            return false;
+        if (this.requiredBuildings == 0)
+            return true;
+
+        var filter = new ContactFilter2D();
+        filter.useTriggers = true;
+        filter.SetLayerMask(this.requiredBuildings);
+
+        var collisions = new List<Collider2D>();
+        Physics2D.OverlapCollider(this.requiredBuildingRange, filter, collisions);
+        return collisions.Count >= this.requiredBuildingAmount;
     }
 
 }
