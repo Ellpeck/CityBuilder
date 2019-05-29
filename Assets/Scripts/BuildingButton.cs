@@ -19,6 +19,7 @@ public class BuildingButton : MonoBehaviour {
 
     public void Remove() {
         Destroy(this.gameObject);
+        LevelManager.Instance.OnButtonRemoved();
     }
 
 }
