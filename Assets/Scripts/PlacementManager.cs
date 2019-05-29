@@ -21,11 +21,7 @@ public class PlacementManager : MonoBehaviour, IPointerClickHandler {
 
     private void Update() {
         if (this.placingObject) {
-            var mousePos = Input.mousePosition;
-            if (mousePos.x < 0 || mousePos.y < 0 || mousePos.x >= this.mainCamera.pixelWidth || mousePos.y >= this.mainCamera.pixelHeight)
-                return;
-
-            var worldPos = this.mainCamera.ScreenToWorldPoint(mousePos);
+            var worldPos = this.mainCamera.ScreenToWorldPoint(Input.mousePosition);
             var snappedWorldPos = new Vector3(Mathf.Ceil(worldPos.x - 0.5F), Mathf.Floor(worldPos.y + 0.5F), 0);
 
             if (!this.currentGhost) {
