@@ -97,7 +97,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disallowedLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 311
+  requiredBuildings:
+    serializedVersion: 2
+    m_Bits: 0
+  requiredBuildingAmount: 0
+  requiredBuildingRange: {fileID: 0}
 --- !u!95 &8593423209773369527
 Animator:
   serializedVersion: 3

@@ -7,6 +7,7 @@ public class Building : MonoBehaviour {
 
     private static readonly int Ghost = Animator.StringToHash("Ghost");
     private static readonly int PlaceHere = Animator.StringToHash("CanPlaceHere");
+    private static readonly int Hidden = Animator.StringToHash("Hidden");
 
     public LayerMask disallowedLayers;
     public LayerMask requiredBuildings;
@@ -26,6 +27,10 @@ public class Building : MonoBehaviour {
     public void SetGhost() {
         this.body.bodyType = RigidbodyType2D.Dynamic;
         this.anim.SetBool(Ghost, true);
+    }
+
+    public void SetGhostActive(bool active) {
+        this.anim.SetBool(Hidden, !active);
     }
 
     public void Move(Vector3 position) {

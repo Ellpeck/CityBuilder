@@ -1,12 +1,19 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class PlacementManager : MonoBehaviour {
+public class PlacementManager : MonoBehaviour, IPointerClickHandler {
 
-    public Building placingObject;
+    public static PlacementManager Instance { get; private set; }
 
     private Camera mainCamera;
 
+    private BuildingButton placingObject;
     private Building currentGhost;
+
+    private void Awake() {
+        Instance = this;
+    }
 
     private void Start() {
         this.mainCamera = Camera.main;
@@ -22,17 +29,31 @@ public class PlacementManager : MonoBehaviour {
             var snappedWorldPos = new Vector3(Mathf.Ceil(worldPos.x - 0.5F), Mathf.Floor(worldPos.y + 0.5F), 0);
 
             if (!this.currentGhost) {
-                this.currentGhost = Instantiate(this.placingObject, snappedWorldPos, Quaternion.identity);
+                this.currentGhost = Instantiate(this.placingObject.building, snappedWorldPos, Quaternion.identity);
                 this.currentGhost.SetGhost();
             }
             this.currentGhost.Move(snappedWorldPos);
 
-            if (Input.GetMouseButtonDown(0) && this.currentGhost.CanPlaceHere()) {
-                Instantiate(this.placingObject, snappedWorldPos, Quaternion.identity);
-                Destroy(this.currentGhost.gameObject);
-                this.currentGhost = null;
+            var ghostActive = !EventSystem.current.IsPointerOverGameObject();
+            this.currentGhost.SetGhostActive(ghostActive);
+
+            if (ghostActive && Input.GetMouseButtonDown(0) && this.currentGhost.CanPlaceHere()) {
+                Instantiate(this.placingObject.building, snappedWorldPos, Quaternion.identity);
+                this.placingObject.Remove();
+                this.SetPlacingObject(null);
             }
         }
+    }
+
+    public void SetPlacingObject(BuildingButton button) {
+        this.placingObject = button;
+        if (this.currentGhost) {
+            Destroy(this.currentGhost.gameObject);
+            this.currentGhost = null;
+        }
+    }
+
+    public void OnPointerClick(PointerEventData eventData) {
     }
 
 }
